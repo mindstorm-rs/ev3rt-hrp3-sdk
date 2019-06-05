@@ -57,3 +57,8 @@ void *__dso_handle __attribute__((weak))=0;
  * See 'http://wiki.osdev.org/Calling_Global_Constructors' for details of '.fini_array' and '_fini' in ARM.
  */
 void __attribute__((weak)) _fini() {}
+
+// System call wrappers (for ev3rt-rs)
+void ev3_exit_task() { ext_tsk(); }
+HRTCNT ev3_fch_hrt() { return fch_hrt(); }
+extern ER ev3_sleep(int ms) { return tslp_tsk(ms); }

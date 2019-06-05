@@ -46,6 +46,11 @@ extern "C" {
  */
 extern void _app_init_task(intptr_t unused);
 
+// System call wrappers (for ev3rt-rs)
+extern void ev3_exit_task();
+extern HRTCNT ev3_fch_hrt();
+extern ER ev3_sleep(int ms);
+
 #ifdef __cplusplus
 }
 #endif
