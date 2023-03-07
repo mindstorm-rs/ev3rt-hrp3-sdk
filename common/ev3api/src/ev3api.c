@@ -61,4 +61,5 @@ void __attribute__((weak)) _fini() {}
 // System call wrappers (for ev3rt-rs)
 void ev3_exit_task() { ext_tsk(); }
 HRTCNT ev3_fch_hrt() { return fch_hrt(); }
-extern ER ev3_sleep(int ms) { return tslp_tsk(ms); }
+ER ev3_get_tim(SYSTIM *p_systim) { return get_tim(p_systim); }
+extern ER ev3_sleep(int ticks) { return tslp_tsk(ticks); }
