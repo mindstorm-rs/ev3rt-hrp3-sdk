@@ -647,21 +647,13 @@ void test_nxt_ultrasonic_sensor(sensor_port_t port) {
 	sprintf(msgbuf, "Port: %c", '1' + port);
 	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
 
-    int16_t previous_distance = 0;
     int16_t distance = 0;
 
 	VIEW_SENSOR({
-		bool_t val = nxt_ultrasonic_sensor_get_last_reading(port, &distance);
+		bool_t val = nxt_ultrasonic_sensor_get_distance(port, &distance);
 		assert(val);
 		sprintf(msgbuf, "Distance.: %-4d", distance);
 		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
-		if (distance == previous_distance) {
-			val = nxt_ultrasonic_sensor_warm_reset(port);
-		} else {
-			previous_distance = distance;
-			val = nxt_ultrasonic_sensor_oneshot_reading(port);
-		}
-		assert(val);
 		tslp_tsk(22U * 1000U);
 	});
 }
