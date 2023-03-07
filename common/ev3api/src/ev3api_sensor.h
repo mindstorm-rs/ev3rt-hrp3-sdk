@@ -41,16 +41,17 @@ typedef enum {
  * \brief サポートするセンサタイプ
  */
 typedef enum {
-    NONE_SENSOR = 0,     //!< \~English Not connected			 		  \~Japanese センサ未接続
-    ULTRASONIC_SENSOR,   //!< \~English Ultrasonic sensor 	 			  \~Japanese 超音波センサ
-    GYRO_SENSOR,	     //!< \~English Gyroscope sensor 		 		  \~Japanese ジャイロセンサ
-    TOUCH_SENSOR,	     //!< \~English Touch sensor			 		  \~Japanese タッチセンサ
-    COLOR_SENSOR,	     //!< \~English Color sensor					  \~Japanese カラーセンサ
-    INFRARED_SENSOR,     //!< \~English Infra-Red sensor				  \~Japanese 赤外線センサー
-	HT_NXT_ACCEL_SENSOR, //!< \~English HiTechnic NXT acceleration sensor \~Japanese 加速度センサ（HiTechnic社製）
-	HT_NXT_COLOR_SENSOR, //!< \~English HiTechnic NXT color sensor        \~Japanese カラーセンサ（HiTechnic社製）
-	NXT_TEMP_SENSOR,     //!< \~English NXT temperature sensor            \~Japanese NXT温度センサ
-    TNUM_SENSOR_TYPE     //!< \~English Number of sensor types 			  \~Japanese センサタイプの数
+    NONE_SENSOR = 0,       //!< \~English Not connected			 		  \~Japanese センサ未接続
+    ULTRASONIC_SENSOR,     //!< \~English Ultrasonic sensor				  \~Japanese 超音波センサ
+    GYRO_SENSOR,	       //!< \~English Gyroscope sensor 		 		  \~Japanese ジャイロセンサ
+    TOUCH_SENSOR,	       //!< \~English Touch sensor			 		  \~Japanese タッチセンサ
+    COLOR_SENSOR,	       //!< \~English Color sensor					  \~Japanese カラーセンサ
+    INFRARED_SENSOR,       //!< \~English Infra-Red sensor				  \~Japanese 赤外線センサー
+	HT_NXT_ACCEL_SENSOR,   //!< \~English HiTechnic NXT acceleration sensor \~Japanese 加速度センサ（HiTechnic社製）
+	HT_NXT_COLOR_SENSOR,   //!< \~English HiTechnic NXT color sensor        \~Japanese カラーセンサ（HiTechnic社製）
+	NXT_ULTRASONIC_SENSOR, //!< \~English NXT Ultrasonic sensor             \~Japanese 超音波センサ
+	NXT_TEMP_SENSOR,       //!< \~English NXT temperature sensor            \~Japanese NXT温度センサ
+    TNUM_SENSOR_TYPE       //!< \~English Number of sensor types 			\~Japanese センサタイプの数
 } sensor_type_t;
 
 /**
@@ -417,6 +418,42 @@ bool_t ht_nxt_color_sensor_measure_rgb(sensor_port_t port, rgb_raw_t *val);
  * \retval false tempは変更されなかった（前回のI2C操作が完成していない）
  */
 bool_t nxt_temp_sensor_measure(sensor_port_t port, float *temp);
+
+/**
+ * \~English
+ * \brief 	        Get the distance with a NXT ultrasonic sensor.
+ * \details         Always returns 0 (error log is outputted) when an invalid sensor number is specified.
+ * \param port      Sensor port to be inquired
+ * \retval true     Distance is updated (in centimeters)
+ * \retval false    Argument error
+ *
+ * \~Japanese
+ */
+bool_t nxt_ultrasonic_sensor_get_last_reading(sensor_port_t port, int16_t *distance);
+
+/**
+ * \~English
+ * \brief 	        Request a oneshot reading to a NXT ultrasonic sensor.
+ * \details         Always returns 0 (error log is outputted) when an invalid sensor number is specified.
+ * \param port      Sensor port to be inquired
+ * \retval true     Distance will be retrieved
+ * \retval false    Operation had not been performed due to I2C busy
+ *
+ * \~Japanese
+ */
+bool_t nxt_ultrasonic_sensor_oneshot_reading(sensor_port_t port);
+
+/**
+ * \~English
+ * \brief 	        Request a warm reset to a NXT ultrasonic sensor.
+ * \details         Always returns 0 (error log is outputted) when an invalid sensor number is specified.
+ * \param port      Sensor port to be inquired
+ * \retval true     Request successful
+ * \retval false    I2C bus busy
+ *
+ * \~Japanese
+ */
+bool_t nxt_ultrasonic_sensor_warm_reset(sensor_port_t port);
 
 /**
  * @} // End of group

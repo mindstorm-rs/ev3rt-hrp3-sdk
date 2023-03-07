@@ -60,7 +60,8 @@ void connect_sensor(intptr_t unused) {
 		{ .key = '2', .title = "Gyro sensor", .exinf = GYRO_SENSOR },
 		{ .key = '3', .title = "Touch sensor", .exinf = TOUCH_SENSOR },
 		{ .key = '4', .title = "Color sensor", .exinf = COLOR_SENSOR },
-		{ .key = '5', .title = "I2C sensor", .exinf = I2C_SENSOR },
+		//{ .key = '5', .title = "I2C sensor", .exinf = I2C_SENSOR },
+		{ .key = '5', .title = "NXT US sensor", .exinf = NXT_ULTRASONIC_SENSOR },
 		{ .key = '6', .title = "IR sensor", .exinf = INFRARED_SENSOR },
 		{ .key = 'N', .title = "Not connected", .exinf = NONE_SENSOR },
 		//{ .key = 'Q', .title = "Cancel", .exinf = -1 },
@@ -635,6 +636,36 @@ void test_nxt_temp_sensor(sensor_port_t port) {
 	});
 }
 
+static 
+void test_nxt_ultrasonic_sensor(sensor_port_t port) {
+	// Draw title
+	char msgbuf[100];
+	ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
+	ev3_lcd_draw_string("Test Sensor", (EV3_LCD_WIDTH - strlen("Test Sensor") * MENU_FONT_WIDTH) / 2, 0);
+	sprintf(msgbuf, "Type: NXT Distance");
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 1);
+	sprintf(msgbuf, "Port: %c", '1' + port);
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
+
+    int16_t previous_distance = 0;
+    int16_t distance = 0;
+
+	VIEW_SENSOR({
+		bool_t val = nxt_ultrasonic_sensor_get_last_reading(port, &distance);
+		assert(val);
+		sprintf(msgbuf, "Distance.: %-4d", distance);
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+		if (distance == previous_distance) {
+			val = nxt_ultrasonic_sensor_warm_reset(port);
+		} else {
+			previous_distance = distance;
+			val = nxt_ultrasonic_sensor_oneshot_reading(port);
+		}
+		assert(val);
+		tslp_tsk(22U * 1000U);
+	});
+}
+
 void test_sensor(intptr_t unused) {
 	const CliMenuEntry* cme_port = NULL;
 	while(cme_port == NULL) {
@@ -669,6 +700,9 @@ void test_sensor(intptr_t unused) {
 		break;
 	case NXT_TEMP_SENSOR:
 		test_nxt_temp_sensor(cme_port->exinf);
+		break;
+	case NXT_ULTRASONIC_SENSOR:
+		test_nxt_ultrasonic_sensor(cme_port->exinf);
 		break;
 	case NONE_SENSOR: {
 		char msgbuf[100];
