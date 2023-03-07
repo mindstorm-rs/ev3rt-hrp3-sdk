@@ -456,6 +456,18 @@ bool_t nxt_ultrasonic_sensor_oneshot_reading(sensor_port_t port);
 bool_t nxt_ultrasonic_sensor_warm_reset(sensor_port_t port);
 
 /**
+ * \~English
+ * \brief 	        Get the distance with a NXT ultrasonic sensor or do a warm reset if the value is stale.
+ * \details         Always returns 0 (error log is outputted) when an invalid sensor number is specified.
+ * \param port      Sensor port to be inquired
+ * \retval true     Distance is updated (in centimeters)
+ * \retval false    I2C bus busy
+ *
+ * \~Japanese
+ */
+bool_t nxt_ultrasonic_sensor_get_distance(sensor_port_t port, int16_t *distance);
+
+/**
  * @} // End of group
  */
 

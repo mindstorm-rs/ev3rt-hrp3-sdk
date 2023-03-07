@@ -558,8 +558,7 @@ bool_t nxt_ultrasonic_sensor_oneshot_reading(sensor_port_t port) {
 	CHECK_COND(ev3_sensor_get_type(port) == NXT_ULTRASONIC_SENSOR, E_OBJ);
 	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
 
-	ercd = start_i2c_transaction(port, 0x1, "\x42", 1, 1);
-	assert(ercd == E_OK);
+	SVC_PERROR(ercd = start_i2c_transaction(port, 0x1, "\x42", 1, 1));
 
 	return true;
 
@@ -575,8 +574,32 @@ bool_t nxt_ultrasonic_sensor_warm_reset(sensor_port_t port) {
 	CHECK_COND(ev3_sensor_get_type(port) == NXT_ULTRASONIC_SENSOR, E_OBJ);
 	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
 
-	ercd = start_i2c_transaction(port, 0x4, "\x42", 1, 1);
-	assert(ercd == E_OK);
+	SVC_PERROR(ercd = start_i2c_transaction(port, 0x4, "\x42", 1, 1));
+
+	return true;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	return false;
+}
+
+static uint8_t nxt_us_distances[4];
+
+bool_t nxt_ultrasonic_sensor_get_distance(sensor_port_t port, int16_t *distance) {
+	ER ercd;
+
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == NXT_ULTRASONIC_SENSOR, E_OBJ);
+	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
+
+    uint8_t d = pI2CSensorData[port].raw[0];
+	*distance = d;
+	if (d != nxt_us_distances[port]) {
+		SVC_PERROR(ercd = start_i2c_transaction(port, 0x1, "\x42", 1, 1));
+	} else {
+		SVC_PERROR(ercd = start_i2c_transaction(port, 0x4, "\x42", 1, 1));
+	}
+	nxt_us_distances[port] = d;
 
 	return true;
 
